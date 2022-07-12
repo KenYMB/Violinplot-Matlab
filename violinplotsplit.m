@@ -105,13 +105,21 @@ function violins = violinplotsplit(data, cats, varargin)
             thisCat = catnames(n);
             catnames_labels{n} = char(thisCat);
             thisData = data(cats == thisCat);
-            violins(n) = Violin(thisData, n, varargin{:});
+            violins(n) = Violin({thisData}, n, varargin{:});
         end
         set(gca, 'XTick', 1:length(catnames), 'XTickLabels', catnames_labels);
 
+    % Cell data
+    elseif iscell(data)
+        violins = Violin(data, 1, varargin{:});
+        set(gca, 'XTick', 1);
+        if hascategories && numel(cats) == 1
+            set(gca, 'XTickLabels', cats);
+        end
+
     % 1D data, no categories
     elseif isvector(data)
-        violins = Violin(data, 1, varargin{:});
+        violins = Violin({data}, 1, varargin{:});
         set(gca, 'XTick', 1);
         if hascategories && numel(cats) == 1
             set(gca, 'XTickLabels', cats);
